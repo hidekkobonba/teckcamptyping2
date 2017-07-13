@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Typing Game!</title>
+  <style>
+  body {
+    padding-top: 10px;
+    font-family: 'Courier New', sans-serif;
+    
+  }
+  #target {
+    font-size: 20px;
+    letter-spacing: 1px;
+
+  }
+  .info {
+    color: #ccc;
+  }
+  </style>
+</head>
+<body>
+  <pre id="target"></pre>
+  <textarea class="in" ROWS="60" COLS="60" style="font-size:120%;color:#ffffff;background-color:#000000"> </textarea>
+  <p class="info">
+    Letters count: <span id="score"></span>,
+    Miss count: <span id="miss"></span>
+  </p>
+  <script>
+  var entityify = (function(){
+
+    var character = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+        '\'': '&#39;'
+    };
+
+    return function(t) {
+        return t.replace(/[<>'&"]/g, function(c) {
+            return character[c];
+        });
+    };
+
+})();
+
+
+
+  (function() {
+
+    var words = [
+
+      `class      CreateComments < ActiveRecord::Migration`,
+      `def change`,
+      `create_table :comments do |t|`,
+      `t.integer :user_id`,
+      `t.integer :tweet_id`,
+      `t.text :text`,
+      `t.timestamps`,
+    ];
+
+    var currentWord = `class      CreateComments < ActiveRecord::Migration`;
+    var currentLocation = 0;
+    var score = 0;
+    var miss = 0;
+    var target = document.getElementById('target');
+    var scoreLabel = document.getElementById('score');
+    var missLabel = document.getElementById('miss');
+    var k = 0;
+    target.innerHTML = entityify(currentWord);
+    scoreLabel.innerHTML = score;
+    missLabel.innerHTML = miss;
+
+    function setTarget() {
+      k++
+      currentWord = words[k];
+      target.innerHTML = currentWord;
+      currentLocation = 0;
+    }
+
+    window.addEventListener('keypress', function(e) {
+      // e.keyCode
+      // console.log(String.fromCharCode(e.keyCode));
+
+
+      if (String.fromCharCode(e.keyCode) === currentWord[currentLocation] ){
+        currentLocation++;
+        var otamesi = document.getElementById("target").textContent;
+        var placeholder = '';
+        for (var i = 0; i < currentLocation; i++) {
+          placeholder += otamesi.charAt(i).fontcolor("red") ;
+
+        }
+
+
+        target.innerHTML = placeholder + entityify(currentWord.substring(currentLocation));
+        // console.log('score!');
+        score++;
+        scoreLabel.innerHTML = score;
+        if (currentLocation === currentWord.length) {
+          setTarget();
+        }
+       } else {
+        // console.log('miss!');
+        miss++;
+        missLabel.innerHTML = miss;
+      }
+    });
+
+  })();
+  </script>
+</body>
+</html>
